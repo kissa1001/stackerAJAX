@@ -45,3 +45,10 @@
 	background-color: #F78181;
 	padding: 1em;
 }
+
+.results li{
+	border:1px solid black;
+	padding: 5px;
+	margin: 0 auto 1em auto;
+	list-style: none;
+}

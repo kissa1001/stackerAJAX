@@ -82,6 +82,7 @@ var getUnanswered = function(tags) {
 };
 
 
+	
 $(document).ready( function() {
 	$('.unanswered-getter').submit( function(e){
 		e.preventDefault();
@@ -91,4 +92,39 @@ $(document).ready( function() {
 		var tags = $(this).find("input[name='tags']").val();
 		getUnanswered(tags);
 	});
+
+//Top-answerer
+	$('.inspiration-getter').submit(function(e){
+		e.preventDefault();
+		var tag = $('#getTag').val();
+		$('#getTag').val(' ');
+		getTopAnswerers(tag);
+	});
+
+	var getTopAnswerers = function(tag) {
+		var request = {
+			page : '1',
+			site: 'stackoverflow'
+		};
+		$.ajax({
+			url: "http://api.stackexchange.com/2.2/tags/" + tag + "/top-answerers/all_time",
+			data: request,
+			dataType: "jsonp",
+			type: "GET",
+			success: function(data){
+				var results = $.map(data.items,function(result){
+					return {
+						user: result.user.display_name,
+						thumbnail: result.user.profile_image,
+						link: result.user.link,
+						reputation: result.user.reputation,
+						posts: result.post_count,
+						score: result.score
+					};
+				});
+				var template =  Handlebars.compile($('#top-answerer-template').html());
+				$('ul.results').append(template(results));
+			}
+		});
+	};
 });
